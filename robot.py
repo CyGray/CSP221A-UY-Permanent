@@ -1,6 +1,16 @@
 import abc
 
 
+class InsufficientBatteryError(Exception):
+    def __init__(self, name, required, available):
+        self.name = name
+        self.required = required
+        self.available = available
+        super().__init__(
+            f"{name} needs {required}% battery for this task but only has {available}%."
+        )
+
+
 class Robot(abc.ABC):
     manufacturer = "Sarap Technologies Co. Ltd."
     population = 0
@@ -17,6 +27,11 @@ class Robot(abc.ABC):
     @battery.setter
     def battery(self, value):
         self._battery = max(0, min(100, value))
+
+    def use_battery(self, amount):
+        if amount > self.battery:
+            raise InsufficientBatteryError(self.name, amount, self.battery)
+        self.battery -= amount
 
     @abc.abstractmethod
     def perform_task(self, **kwargs):
@@ -35,7 +50,7 @@ class SaltedNutRobot(Robot):
         self.salt_capacity = salt_capacity
 
     def perform_task(self, **kwargs):
-        self.battery -= 10
+        self.use_battery(10)
         return f"{self.name} salted the nuts."
 
 
@@ -45,7 +60,7 @@ class CoatedNutRobot(Robot):
         self.coating_capacity = coating_capacity
 
     def perform_task(self, **kwargs):
-        self.battery -= 15
+        self.use_battery(15)
         return f"{self.name} coated the nuts."
 
 
