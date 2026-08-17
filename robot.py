@@ -47,3 +47,8 @@ class CoatedNutRobot(Robot):
     def perform_task(self, **kwargs):
         self.battery -= 15
         return f"{self.name} coated the nuts."
+
+
+def fleet_report(robots):
+    for robot in robots:
+        print(str(robot))
