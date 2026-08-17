@@ -27,3 +27,23 @@ class Robot(abc.ABC):
 
     def __repr__(self):
         return f"{type(self).__name__}(name={self.name!r}, battery={self.battery!r})"
+
+
+class SaltedNutRobot(Robot):
+    def __init__(self, name, battery=100, salt_capacity=5):
+        super().__init__(name, battery)
+        self.salt_capacity = salt_capacity
+
+    def perform_task(self, **kwargs):
+        self.battery -= 10
+        return f"{self.name} salted the nuts."
+
+
+class CoatedNutRobot(Robot):
+    def __init__(self, name, battery=100, coating_capacity=100):
+        super().__init__(name, battery)
+        self.coating_capacity = coating_capacity
+
+    def perform_task(self, **kwargs):
+        self.battery -= 15
+        return f"{self.name} coated the nuts."
