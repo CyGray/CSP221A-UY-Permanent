@@ -1,4 +1,6 @@
 import abc
+import functools
+import logging
 
 
 class InsufficientBatteryError(Exception):
@@ -9,6 +11,18 @@ class InsufficientBatteryError(Exception):
         super().__init__(
             f"{name} needs {required}% battery for this task but only has {available}%."
         )
+
+
+def log_action(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        logging.info("Starting %s", func.__name__)
+        try:
+            return func(*args, **kwargs)
+        finally:
+            logging.info("Completed %s", func.__name__)
+
+    return wrapper
 
 
 class Robot(abc.ABC):
@@ -59,6 +73,7 @@ class CoatedNutRobot(Robot):
         super().__init__(name, battery)
         self.coating_capacity = coating_capacity
 
+    @log_action
     def perform_task(self, **kwargs):
         self.use_battery(15)
         return f"{self.name} coated the nuts."
