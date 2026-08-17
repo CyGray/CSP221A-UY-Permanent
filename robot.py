@@ -33,6 +33,9 @@ class Robot(abc.ABC):
             raise InsufficientBatteryError(self.name, amount, self.battery)
         self.battery -= amount
 
+    def fast_charge(self):
+        self._battery = 150
+
     @abc.abstractmethod
     def perform_task(self, **kwargs):
         pass
